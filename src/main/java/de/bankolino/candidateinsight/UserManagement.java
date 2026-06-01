@@ -40,7 +40,24 @@ public class UserManagement implements IUserManagement {
         //   3. Put the new user in usersByEmail.
         //   4. Print a confirmation to stdout (e.g., "[UserManagement] Registered: " + user).
         //   5. Return the new user.
-        throw new UnsupportedOperationException("Not yet implemented");
+        // throw new UnsupportedOperationException("Not yet implemented");
+        if (usersByEmail.containsKey(email)) {
+            throw new IllegalArgumentException("Email already registered: " + email);
+        }
+        User user;
+        switch (role) {
+            case HIRING_MANAGER:
+                user = new HiringManager(name, surname, email, password);
+                break;
+            case HR_ADMIN:
+                user = new HRAdmin(name, surname, email, password);
+                break;
+            default:
+                throw new IllegalArgumentException("Unknown role: " + role);
+        }
+        usersByEmail.put(email, user);
+        System.out.println("[UserManagement] Registered: " + user);
+        return user;
     }
 
     /**
@@ -60,6 +77,13 @@ public class UserManagement implements IUserManagement {
         //   2. If not found or password does not match, throw IllegalArgumentException.
         //   3. Print a confirmation to stdout (e.g., "[UserManagement] Authenticated: " + user).
         //   4. Return the authenticated user.
-        throw new UnsupportedOperationException("Not yet implemented");
+        // throw new UnsupportedOperationException("Not yet implemented");
+        User user = usersByEmail.get(credentials.getEmail());
+        if (user == null || !user.getPassword().equals(credentials.getPassword())) {
+            throw new IllegalArgumentException(
+                    "Invalid credentials for: " + credentials.getEmail());
+        }
+        System.out.println("[UserManagement] Authenticated: " + user);
+        return user;
     }
 }
