@@ -43,6 +43,7 @@ public class Candidate implements ICandidate {
     /**
      * Adds an evaluation to the candidate's dossier.
      * @param evaluation evaluation submitted by a hiring manager
+     *  Von Jonas
      */
     @Override
     public void addEvaluation(Evaluation evaluation) {
