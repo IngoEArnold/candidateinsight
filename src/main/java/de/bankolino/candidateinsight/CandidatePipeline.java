@@ -44,11 +44,14 @@ public class CandidatePipeline implements ICandidatePipeline {
      */
     @Override
     public void updateCandidates(List<ICandidate> newCandidates) {
-        // TODO [Unit03 - Step 2b]: Implement additive update.
-        //   1. For each ICandidate c in newCandidates:
-        //      if (!candidates.containsKey(c.getCandidateId())) { candidates.put(...); }
-        //   2. Print a log line showing how many candidates are now in the pipeline.
-        throw new UnsupportedOperationException("Not yet implemented");
+        // Only add candidates not already present (preserves existing evaluations)
+        for (ICandidate c : newCandidates) {
+            if (!candidates.containsKey(c.getCandidateId())) {
+                candidates.put(c.getCandidateId(), c);
+            }
+        }
+        System.out.println("[CandidatePipeline] Pipeline '" + positionId
+                + "' updated: " + candidates.size() + " candidate(s).");
     }
 
     /**
@@ -57,8 +60,7 @@ public class CandidatePipeline implements ICandidatePipeline {
      */
     @Override
     public List<ICandidate> getCandidates() {
-        // TODO [Unit03 - Step 2c]: Return a new ArrayList containing all map values.
-        throw new UnsupportedOperationException("Not yet implemented");
+        return new ArrayList<ICandidate>(candidates.values());
     }
 
     /**
@@ -73,8 +75,11 @@ public class CandidatePipeline implements ICandidatePipeline {
      */
     @Override
     public ICandidate getCandidate(String candidateId) {
-        // TODO [Unit03 - Step 2d]: Look up the candidate; throw if not found.
-        throw new UnsupportedOperationException("Not yet implemented");
+        ICandidate c = candidates.get(candidateId);
+        if (c == null) {
+            throw new IllegalArgumentException("Candidate not found: " + candidateId);
+        }
+        return c;
     }
 
     /**
@@ -90,11 +95,16 @@ public class CandidatePipeline implements ICandidatePipeline {
      */
     @Override
     public EvaluationSummary getEvaluationSummary() {
-        // TODO [Unit03 - Step 3d]: Build the ranked EvaluationSummary.
-        //   1. List<ICandidate> ranked = new ArrayList<>(candidates.values());
-        //   2. Sort ranked using Collections.sort with an anonymous Comparator
-        //      (descending by getAverageScore()).
-        //   3. Return new EvaluationSummary(positionId, ranked).
-        throw new UnsupportedOperationException("Not yet implemented");
+        List<ICandidate> ranked = new ArrayList<ICandidate>(candidates.values());
+
+// Sort by average score descending using an explicit Comparator (no lambdas)
+        Collections.sort(ranked, new Comparator<ICandidate>() {
+            @Override
+            public int compare(ICandidate a, ICandidate b) {
+                return Double.compare(b.getAverageScore(), a.getAverageScore());
+            }
+        });
+
+        return new EvaluationSummary(positionId, ranked);
     }
 }

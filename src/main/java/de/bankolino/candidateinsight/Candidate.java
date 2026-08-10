@@ -46,8 +46,7 @@ public class Candidate implements ICandidate {
      */
     @Override
     public void addEvaluation(Evaluation evaluation) {
-        // TODO [Unit03 - Step 3a]: Add the evaluation to the evaluations list.
-        throw new UnsupportedOperationException("Not yet implemented");
+        evaluations.add(evaluation);
     }
 
     /**
@@ -60,8 +59,7 @@ public class Candidate implements ICandidate {
      */
     @Override
     public List<Evaluation> getEvaluations() {
-        // TODO [Unit03 - Step 3b]: Return an unmodifiable view of evaluations.
-        throw new UnsupportedOperationException("Not yet implemented");
+        return Collections.unmodifiableList(evaluations);
     }
 
     /**
@@ -75,11 +73,15 @@ public class Candidate implements ICandidate {
      */
     @Override
     public double getAverageScore() {
-        // TODO [Unit03 - Step 3c]: Compute the average score.
-        //   1. Return 0.0 if evaluations is empty.
-        //   2. Sum the scores using a for-each loop over evaluations.
-        //   3. Return (double) total / evaluations.size().
-        throw new UnsupportedOperationException("Not yet implemented");
+        if (evaluations.isEmpty()) {
+            return 0.0;
+        }
+// Sum scores using an explicit loop (no streams)
+        int total = 0;
+        for (Evaluation e : evaluations) {
+            total += e.getRating().getScore();
+        }
+        return (double) total / evaluations.size();
     }
 
     @Override
