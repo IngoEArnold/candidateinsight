@@ -26,13 +26,14 @@ public class TalentHiveConnector implements ITalentHiveConnector {
      */
     @Override
     public List<ICandidate> fetchCandidates(String positionId) {
-        // TODO [Unit03 - Step 2a]: Implement simulated TalentHive response.
-        //   1. Print a log line to stdout (e.g., "[TalentHiveConnector] Fetching candidates for ...").
-        //   2. Create a List<ICandidate> and add three Candidate objects:
-        //      - new Candidate("C001", "Max",  "Mueller", positionId)
-        //      - new Candidate("C002", "Sara", "Schmidt", positionId)
-        //      - new Candidate("C003", "Leon", "Fischer", positionId)
-        //   3. Return the list.
-        throw new UnsupportedOperationException("Not yet implemented");
+        System.out.println("[TalentHiveConnector] Fetching candidates for position '"
+                + positionId + "' from TalentHive (simulated)...");
+
+// Simulated candidates - in production, these come from the TalentHive REST API
+        List<ICandidate> result = new ArrayList<ICandidate>();
+        result.add(new Candidate("C001", "Max",  "Mueller",  positionId));
+        result.add(new Candidate("C002", "Sara", "Schmidt",  positionId));
+        result.add(new Candidate("C003", "Leon", "Fischer",  positionId));
+        return result;
     }
 }

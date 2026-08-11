@@ -70,8 +70,16 @@ public class CandidateInsight implements ICandidateInsight {
      */
     @Override
     public void syncCandidates(String positionId) {
-        // TODO [Unit03 - Step 4a]: Implement UC3 - Sync Candidate Pipeline.
-        throw new UnsupportedOperationException("Not yet implemented");
+        System.out.println("[CandidateInsight] Syncing candidates for position: " + positionId);
+        List<ICandidate> fetched = talentHiveConnector.fetchCandidates(positionId);
+
+// Create pipeline on first sync for this position; reuse on subsequent syncs
+        ICandidatePipeline pipeline = pipelines.get(positionId);
+        if (pipeline == null) {
+            pipeline = new CandidatePipeline(positionId);
+            pipelines.put(positionId, pipeline);
+        }
+        pipeline.updateCandidates(fetched);
     }
 
     // --- UC4: View Candidate Pipeline --------------------------------------------
@@ -87,8 +95,7 @@ public class CandidateInsight implements ICandidateInsight {
      */
     @Override
     public List<ICandidate> viewPipeline(String positionId) {
-        // TODO [Unit03 - Step 4b]: Implement UC4 - View Candidate Pipeline.
-        throw new UnsupportedOperationException("Not yet implemented");
+        return getPipelineOrThrow(positionId).getCandidates();
     }
 
     // --- UC5: Review and Rate Candidate ------------------------------------------
@@ -105,8 +112,7 @@ public class CandidateInsight implements ICandidateInsight {
      */
     @Override
     public ICandidate reviewCandidate(String positionId, String candidateId) {
-        // TODO [Unit03 - Step 4c]: Implement UC5 (step 1) - Review Candidate.
-        throw new UnsupportedOperationException("Not yet implemented");
+        return getPipelineOrThrow(positionId).getCandidate(candidateId);
     }
 
     /**
@@ -131,8 +137,11 @@ public class CandidateInsight implements ICandidateInsight {
     @Override
     public void rateCandidate(String positionId, String candidateId, User evaluator,
                               EvaluationRating rating, String comment) {
-        // TODO [Unit03 - Step 4d]: Implement UC5 (step 2) - Rate Candidate.
-        throw new UnsupportedOperationException("Not yet implemented");
+        ICandidate candidate = getPipelineOrThrow(positionId).getCandidate(candidateId);
+        candidate.addEvaluation(new Evaluation(evaluator, rating, comment));
+        System.out.println("[CandidateInsight] Evaluation recorded for "
+                + candidate.getName() + " " + candidate.getSurname()
+                + " by " + evaluator.getName() + ": " + rating);
     }
 
     // --- UC6: View Evaluation Summary --------------------------------------------
@@ -148,8 +157,7 @@ public class CandidateInsight implements ICandidateInsight {
      */
     @Override
     public EvaluationSummary viewEvaluationSummary(String positionId) {
-        // TODO [Unit03 - Step 4e]: Implement UC6 - View Evaluation Summary.
-        throw new UnsupportedOperationException("Not yet implemented");
+        return getPipelineOrThrow(positionId).getEvaluationSummary();
     }
 
     // --- Internal Helpers --------------------------------------------------------
